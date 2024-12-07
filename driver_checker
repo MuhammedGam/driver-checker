@@ -1,0 +1,51 @@
+#!/bin/bash
+log_file=check_driver.log
+ touch "$log_file"
+ #checking user inputs
+
+ if [ "$1" == "new" ]; then
+ #collecting user data
+ read -p "Please Enter your name: " name
+read -p "Please Enter your age: " age
+read -p "Please Enter your Vision rate (1-6): " v_rate
+
+#eligiblity
+if (($age >=18 && v_rate>=4)); then
+result="Eligible"
+echo "$name:$age:$v_rate:$result"
+else
+result="Not Eligible"
+echo "$name:$age:$v_rate:$result"
+fi
+#saving data 
+echo "$name:$age:$v_rate:$result">>"$log_file"
+elif [ "$1" == "get" ];
+then
+#getting user result
+read -p "Please Enter the name of the user: " search_name
+user_result=$(grep "^$search_name:" -i "$log_file")
+if [ -z "$user_result" ];
+then
+echo "There is no results for $search_name "
+else
+
+echo "$(echo "$search_name" | cut -d ':' -f1 ): $( echo "$user_result" | cut -d ':' -f4 )"
+fi
+
+elif [ "$1" == "list" ]; then
+    # List all users using a for loop
+    if [ -s "$LOG_FILE" ]; then
+        while IFS=: read -r name age v_rate result; do
+            echo "$name:$result"
+        done < "$LOG_FILE"
+    else
+        echo "No records found."
+    fi
+
+else
+    # Invalid argument
+    echo "Invalid argument please use driver_checker [new|get|list]"
+fi
+
+
+
